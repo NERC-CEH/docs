@@ -65,6 +65,8 @@ class ExcelAsDataFrame:
 
         try:
             self.xlApp: _xlwings.main.App = _xlwings.apps.active
+            if not self.xlApp:
+                self.xlApp: _xlwings.main.App = _xlwings.App(visible=visible)
         except:
             self.xlApp: _xlwings.main.App = _xlwings.App(visible=visible)
 
@@ -130,11 +132,11 @@ class ExcelAsDataFrame:
         Notes:
             If using the pandas engine, then the args usecols, nrows, and skiprows are generated automatically and do not need to be passed.
         """
-        if not engine: engine='xlwings'
+        if not engine: engine = 'xlwings'
         if engine not in ['xlwings', 'pandas']:
             _warn('Invalid engine %s specified. Defaulting to "xlwings"' % engine)
 
-        if table and range:
+        if table and range_:
             raise ValueError('Specify either a table or a range, not both.')
 
         if table:
@@ -144,7 +146,7 @@ class ExcelAsDataFrame:
             else:
                 t, w = self._get_table(table)
                 r = t.range
-        elif range:
+        elif range_:
             if worksheet:
                 r = self.xlApp.books[self._workbook_file_only].sheets[worksheet].range(range_)
                 w = self.xlApp.books[self._workbook_file_only].sheets[worksheet]
@@ -175,3 +177,32 @@ class ExcelAsDataFrame:
             for tbl in sheet.tables:
                 if tbl.name.lower() == table.lower():
                     return tbl, sheet
+
+    def table_names(self) -> list[str]:
+        """
+        Get a list of all tables in the active workbook
+
+        Returns:
+            list[str]: List of all tables in the active workbook
+        """
+        out = []
+        for sheet in self.xlBk.sheets:
+            for tbl in sheet.tables:
+                out += [tbl.name]
+        return out
+
+    def view(self) -> None:
+        """
+        View self.df in using xlwings.view
+
+        Raises:
+            UserWarning: If self.df evaluates to False
+
+        Returns: None
+        """
+        # TODO: debug - gonna have to force the app to visible, otherwise wont work
+        if self.df:
+            self.xlApp.visible = True
+            _xlwings.view(self.df)
+        else:
+            raise UserWarning('Dataframe not availabe/loaded in your class instance')
