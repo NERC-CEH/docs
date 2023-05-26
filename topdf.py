@@ -76,6 +76,10 @@ def merge_pdf(rootdir: str, find: (str, tuple, list, None) = None, exclude: (str
     pdfs = []
     if isinstance(find, str): find = [find]
 
+    if len(list(_iolib.file_list_generator_dfe(rootdir, '*.pdf', recurse=recurse))) == 0:
+        print('No pdfs found in dir %s. Is your rootdir correct?' % rootdir)
+        return ''
+
     for _, f, _, fname in _iolib.file_list_generator_dfe(rootdir, '*.pdf', recurse=recurse):
 
         # found is first used as a flag to determine if we have found text IN exclude
