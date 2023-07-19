@@ -206,3 +206,16 @@ class ExcelAsDataFrame:
             _xlwings.view(self.df)
         else:
             raise UserWarning('Dataframe not availabe/loaded in your class instance')
+
+
+
+def apps_show():
+    """Show all xlwings apps, can then close manually.
+    Useful for debugging and when not properly closed down during debugging
+    """
+    if xlwings.apps:
+        for app in list(_xlwings.apps):
+            try:
+                app.visible = True
+            except:
+                pass
