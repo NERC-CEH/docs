@@ -26,6 +26,7 @@ class ExcelAsDataFrame:
         worksheet (str): The worksheet to get data frame
         table (str): Table (listobject) name
         range_ (str): A range name
+        skip_df_lower (bool): Skip creation of df_lower. This is for performance/memory optimisation. Only necessary when the worksheets are very large.
 
     Raises:
         UserWarning: If we cannot get or open an xlwings App instance
@@ -56,7 +57,7 @@ class ExcelAsDataFrame:
         >>>     Sheets.mysheet.tables.add(source=Sheets.mysheet['A1'].expand(), name='MyTable')
 
     """
-    def __init__(self, workbook: str, worksheet: str = '', table: str = '', range_: str = '', visible: bool = False):
+    def __init__(self, workbook: str, worksheet: str = '', table: str = '', range_: str = '', visible: bool = False, skip_df_lower: bool = False):
         self._workbook = _path.normpath(workbook)
         self._workbook_file_only = _iolib.get_file_parts2(workbook)[1]
         self._worksheet = worksheet
@@ -75,6 +76,11 @@ class ExcelAsDataFrame:
 
         self.xlBk: _xlwings.main.Book = self.xlApp.books.open(self._workbook)
         self.df = self.as_df(worksheet, table, range_) if worksheet or table or range_ else None
+
+        self.df_lower = None
+        if isinstance(self.df, _pd.DataFrame) and not skip_df_lower:
+            self.df_lower = self.df.copy()
+            self.df_lower.columns = self.df_lower.columns.str.lower()
 
 
     def __enter__(self):
