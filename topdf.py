@@ -5,6 +5,8 @@ import os.path as _path
 import shutil as _shutil
 
 from PyPDF2 import PdfFileMerger
+import PyPDF2 as _pdf
+
 import numpy as _np
 import cv2 as _cv2
 import img2pdf as _img2pdf
@@ -49,6 +51,41 @@ def _rotate_img(im):
 def _build_lbl(s: str):
     """placeholder to build label for img"""
     return s
+
+
+
+def split_pdf(pdf: str, outdir:str, prefix:str = '', suffix: str = '') -> list[str]:
+    """Split a pdf into single pages
+
+    Args:
+        pdf: The pdf file
+        outdir: Directory to split it into
+        prefix: prefix for all exported page file names
+        suffix: suffix for all exported page file names
+
+    Returns:
+        list of file paths to pages created
+
+    Examples:
+
+        >>> split_pdf('C:/my.pdf', 'C:/temp', 'page_')
+        ['C:/temp/page_1.pdf', 'C:/temp/page_2.pdf', ...]
+    """
+    pdf = _path.normpath(pdf)
+    outdir = _path.normpath(outdir)
+
+
+    doc = _pdf.PdfFileReader(pdf)
+    out = []
+    for i, page in enumerate(range(len(doc.pages))):
+        pdf_writer = _pdf.PdfFileWriter()
+        pdf_writer.addPage(doc.pages[page])
+
+        fname = '%s%s%s.pdf' % (prefix, i+1, suffix)
+        with open(fname, 'wb') as out:
+            pdf_writer.write(out)
+        out += [fname]
+    return out
 
 
 def merge_pdf(rootdir: str, find: (str, tuple, list, None) = None, exclude: (str, tuple, list, None) = None, out_file: str = '', sort_func: any = lambda s: s, recurse: bool = False) -> str:

@@ -32,7 +32,9 @@ class ExcelAsDataFrame:
         UserWarning: If we cannot get or open an xlwings App instance
 
     Examples:
+
         Fully specify the worksheet and a range
+
         >>> with ExcelAsDataFrame('C:/my.xlsx', worksheet='Sheet1', range='A1:C1') as Sheet:
         >>>     Sheet.df
         cola    colb    colc
@@ -40,18 +42,21 @@ class ExcelAsDataFrame:
         ...
 
         Ask for a table, cant remember sheet
+
         >>> with ExcelAsDataFrame('C:/my.xlsx', table='Table1') as Sheet:
         >>>     Sheet.df
         cola    colb    colc
         1       2       3
 
         Working range of first sheet, should also work with csv
+
         >>> with ExcelAsDataFrame('C:/my.xlsx') as Sheet:
         >>>     Sheet.df
         cola    colb    colc
         1       2       3
 
         Just open a workbook, create a new sheet instance to Sheets.mysheet, then create a table from an expanded range on mysheet
+
         >>> with ExcelAsDataFrame('C:/my.xlsx') as Sheets:
         >>>     Sheets.mysheet = Sheets.xlBk.sheets['Sheet1']
         >>>     Sheets.mysheet.tables.add(source=Sheets.mysheet['A1'].expand(), name='MyTable')
