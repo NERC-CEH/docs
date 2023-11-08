@@ -1,4 +1,4 @@
 """main init for docs"""
 
 
-__all__ = ['config', 'filetypes', 'topdf', 'zip']
+__all__ = ['config', 'excel', 'exif', 'filetypes', 'topdf', 'video', 'zip']
