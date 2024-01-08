@@ -7,7 +7,7 @@ import os.path as _path
 import funclite.iolib as iolib
 
 import docs
-import docs.zip as zip
+import docs.zip as docs_zip
 
 class Test(unittest.TestCase):
     """unittest for keypoints"""
@@ -25,8 +25,8 @@ class Test(unittest.TestCase):
     #@unittest.skip("Temporaily disabled while debugging")
     def test_extract(self):
         zipto = _path.normpath(_path.join(self.temp_dir))
-        zip.extract(self.zip_file, zipto, match_folder_name=('1',), match_file_name=('1',), match_file_ext=('.docx',)) #extract folder matching 1 and files matching 1
-        zip.extract(self.zip_file, zipto) #full extract
+        docs_zip.extract(self.zip_file, zipto, match_folder_name=('1',), match_file_name=('1',), match_file_ext=('.docx',)) #extract folder matching 1 and files matching 1
+        docs_zip.extract(self.zip_file, zipto) #full extract
         pass
 
 

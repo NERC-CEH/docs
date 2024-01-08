@@ -5,7 +5,7 @@ import os.path as _path
 import shutil as _shutil
 
 from PyPDF2 import PdfFileMerger
-import PyPDF2 as _pdf
+import PyPDF2 as _PyPDF2
 
 import numpy as _np
 import cv2 as _cv2
@@ -75,10 +75,10 @@ def split_pdf(pdf: str, outdir:str, prefix:str = '', suffix: str = '') -> list[s
     outdir = _path.normpath(outdir)
 
 
-    doc = _pdf.PdfFileReader(pdf)
+    doc = _PyPDF2.PdfFileReader(pdf)
     out = []
     for i, page in enumerate(range(len(doc.pages))):
-        pdf_writer = _pdf.PdfFileWriter()
+        pdf_writer = _PyPDF2.PdfFileWriter()
         pdf_writer.addPage(doc.pages[page])
 
         fname = '%s%s%s.pdf' % (prefix, i+1, suffix)
