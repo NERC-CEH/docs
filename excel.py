@@ -173,7 +173,7 @@ class ExcelAsDataFrame:
                 w = self.xlApp.books[self._workbook_file_only].sheets[0]
 
         if engine.lower() == 'xlwings':
-            df = r.expand().options(_pd.DataFrame).value
+            df = r.options(_pd.DataFrame).value
             df.reset_index(inplace=True)
         else:
             # TODO Debug as_df, particularly this
