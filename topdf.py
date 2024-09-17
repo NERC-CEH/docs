@@ -288,6 +288,8 @@ def merge_img2(rootdir: str,
 
     Differs from merge_img as it supports find and exclude as wildcard lists.
 
+    The pdf file names use the subfolder/folder basename.
+
     Args:
         rootdir (str): root folder
         find (list, str, tuple, None): list or string, to match file names
