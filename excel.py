@@ -68,7 +68,8 @@ class ExcelAsDataFrame:
         self._worksheet = worksheet
         self._table = table
         self._range = range_
-
+        self.xlRange = None
+        self._column_index = {}
         try:
             self.xlApp: _xlwings.main.App = _xlwings.apps.active
             if not self.xlApp:
@@ -86,6 +87,17 @@ class ExcelAsDataFrame:
         if isinstance(self.df, _pd.DataFrame) and not skip_df_lower:
             self.df_lower = self.df.copy()
             self.df_lower.columns = self.df_lower.columns.str.lower()
+
+    @property
+    def column_index(self) -> dict:
+        """
+        Gets a dictionary of the column headings and their indexes
+        Returns:
+            dictionary like {'country':0, 'population':1, ...}
+        """
+        if not self._column_index:
+            self._column_index = {col.value: ind for ind, col in enumerate(self.xlRange.rows[0].columns)}
+        return self._column_index
 
 
     def __enter__(self):
@@ -120,6 +132,8 @@ class ExcelAsDataFrame:
             self.xlApp.kill()
             xl = _xlwings.apps.active.api
             xl.Quit()
+
+
 
     def as_df(self, worksheet: str = '', table: str = '', range_: str = '', set_as_self_dot_df: bool = True, engine: str = 'xlwings', **kwargs) -> _pd.DataFrame:
         """
@@ -181,6 +195,7 @@ class ExcelAsDataFrame:
 
         if set_as_self_dot_df:
             self.df = df
+        self.xlRange = r
         return df
 
     def _get_table(self, table: str) -> tuple[xlwings.main.Table, xlwings.main.Sheet]:
